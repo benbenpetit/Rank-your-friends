@@ -4,12 +4,12 @@ import { getFirestore } from 'firebase/firestore'
 import nookies from 'nookies'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDcjHf1Lithk-Y9asfZp8GZMNR_LyMk9Xs',
-  authDomain: 'tierlist-friends.firebaseapp.com',
-  projectId: 'tierlist-friends',
-  storageBucket: 'tierlist-friends.firebasestorage.app',
-  messagingSenderId: '335070166930',
-  appId: '1:335070166930:web:05a56242dac09dd7428b4b'
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 }
 
 const app = initializeApp(firebaseConfig)

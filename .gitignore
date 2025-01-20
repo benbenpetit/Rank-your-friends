@@ -12,7 +12,6 @@
 
 # testing
 /coverage
-/src/core/lib/serviceAccountKey.json
 
 # next.js
 /.next/

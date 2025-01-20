@@ -1,9 +1,12 @@
-import admin, { ServiceAccount } from 'firebase-admin'
-import serviceAccountKey from '@/core/lib/serviceAccountKey.json' // Directly import JSON
+import admin from 'firebase-admin'
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountKey as ServiceAccount) // Pass JSON object directly
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL
+    })
   })
 }
 
