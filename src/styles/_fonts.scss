@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'Neue Montreal', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/NeueMontreal-Bold.otf') format('otf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Montreal', sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  src: url('/fonts/NeueMontreal-BoldItalic.otf') format('otf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/WorkSans-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/WorkSans-Bold.woff2') format('woff2');
+}

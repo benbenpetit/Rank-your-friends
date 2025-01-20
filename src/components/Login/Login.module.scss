@@ -1,0 +1,25 @@
+.container {
+  position: relative;
+  color: #fff;
+  border-radius: 8px;
+  background-color: #3a157f;
+  padding: 1.25rem;
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    margin-top: 1rem;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+
+    img {
+      margin-left: -0.25rem;
+    }
+  }
+}

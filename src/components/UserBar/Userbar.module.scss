@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  align-items: center;
+  column-gap: 0.75rem;
+  background-color: #fff;
+  color: #111;
+  padding: 0.5rem 0.675rem;
+  border-radius: 9999px;
+
+  img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    border-radius: 9999px;
+    box-shadow: 0 0px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  span {
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding-right: 1.25rem;
+    flex: 1;
+  }
+
+  button {
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+  }
+}

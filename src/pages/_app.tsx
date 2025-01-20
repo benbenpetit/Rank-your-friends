@@ -1,6 +1,14 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import '@/styles/globals.scss'
+import type { AppProps } from 'next/app'
+import { AdminProvider } from '@/core/context/AdminContext'
+import { UserProvider } from '@/core/context/UserContext'
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <AdminProvider>
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
+    </AdminProvider>
+  )
 }
