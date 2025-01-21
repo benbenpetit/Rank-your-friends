@@ -27,7 +27,7 @@ const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
             })
             .map((party) => (
               <li key={party.name}>
-                <Link href={`/vote/${party.id}`}>
+                <Link href={`/party/${party.id}`}>
                   <PartyCard party={party} />
                 </Link>
               </li>

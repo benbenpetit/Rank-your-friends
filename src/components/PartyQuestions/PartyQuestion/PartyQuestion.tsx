@@ -26,7 +26,7 @@ const PartyQuestion: FC<Props> = ({
         setParticipants={setSortedParticipants}
       />
       <button onClick={() => validateParticipants(sortedParticipants)}>
-        <span>Valider</span>
+        <span>Question suivante</span>
       </button>
     </div>
   )

@@ -35,9 +35,12 @@ const AdminProvider: FC<AdminProviderProps> = ({ children }) => {
         const token = await user.getIdToken()
 
         // Check admin status via API
-        const res = await fetch('/api/check-admin', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/check-admin`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        )
 
         if (res.ok) {
           setIsAdmin(true)

@@ -1,0 +1,31 @@
+@use 'sass:color';
+
+.container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+
+  h1 {
+    color: #fff;
+  }
+
+  a {
+    background-color: #842dff;
+    border-radius: 8px;
+    padding: 1rem 0.75rem;
+    color: #fff;
+    font-size: 1rem;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
+    text-align: center;
+
+    &:hover {
+      background-color: color.scale(#842dff, $lightness: -2%);
+    }
+  }
+}

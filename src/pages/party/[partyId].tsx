@@ -155,39 +155,44 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { partyId } = params!
 
-  const partyRef = doc(db, 'parties', partyId as string)
-  const partySnap = await getDoc(partyRef)
-  if (!partySnap.exists()) {
-    return {
-      notFound: true
+  try {
+    const partyRef = doc(db, 'parties', partyId as string)
+    const partySnap = await getDoc(partyRef)
+
+    if (!partySnap.exists()) {
+      console.log('Party not found')
+      return { notFound: true }
     }
-  }
-  const partyData = partySnap.data()
 
-  const questionsRef = collection(db, 'parties', partyId as string, 'questions')
-  const questionsSnapshot = await getDocs(questionsRef)
-  const questions = questionsSnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  }))
+    const partyData = partySnap.data()
 
-  // const resResults = await fetch(
-  //   `${process.env.NEXT_PUBLIC_API_URL}/api/results?partyId=${partyId}`
-  // )
-  // const dataResults = await resResults.json()
+    const questionsRef = collection(
+      db,
+      'parties',
+      partyId as string,
+      'questions'
+    )
+    const questionsSnapshot = await getDocs(questionsRef)
+    const questions = questionsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }))
 
-  return {
-    props: {
-      party: {
-        id: partyId,
-        name: partyData?.name,
-        participants: partyData?.participants || [],
-        date: partyData?.date?.toDate().toISOString() || ''
+    return {
+      props: {
+        party: {
+          id: partyId,
+          name: partyData?.name,
+          participants: partyData?.participants || [],
+          date: partyData?.date?.toDate().toISOString() || ''
+        },
+        questions: questions ?? []
       },
-      questions: questions ?? []
-      // results: dataResults?.results || []
-    },
-    revalidate: 60
+      revalidate: 60
+    }
+  } catch (error) {
+    console.error('Error in getStaticProps:', error)
+    return { notFound: true }
   }
 }
 
