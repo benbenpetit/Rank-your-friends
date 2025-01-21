@@ -142,14 +142,19 @@ const ResultsPage: NextPage<ResultsPageProps> = ({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get-parties`)
-  const data = await res.json()
+  try {
+    const partiesRef = collection(db, 'parties')
+    const snapshot = await getDocs(partiesRef)
 
-  const paths = data.parties.map((party: IParty) => ({
-    params: { partyId: party.id }
-  }))
+    const paths = snapshot.docs.map((doc) => ({
+      params: { partyId: doc.id }
+    }))
 
-  return { paths, fallback: false }
+    return { paths, fallback: 'blocking' }
+  } catch (error) {
+    console.error('Error fetching Firestore data in getStaticPaths:', error)
+    return { paths: [], fallback: false }
+  }
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -160,7 +165,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     const partySnap = await getDoc(partyRef)
 
     if (!partySnap.exists()) {
-      console.log('Party not found')
       return { notFound: true }
     }
 
@@ -186,12 +190,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           participants: partyData?.participants || [],
           date: partyData?.date?.toDate().toISOString() || ''
         },
-        questions: questions ?? []
+        questions
       },
       revalidate: 60
     }
   } catch (error) {
-    console.error('Error in getStaticProps:', error)
+    console.error('Error fetching Firestore data in getStaticProps:', error)
     return { notFound: true }
   }
 }
