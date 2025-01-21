@@ -4,7 +4,8 @@ import {
   DndContext,
   DragEndEvent,
   DragStartEvent,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors
 } from '@dnd-kit/core'
@@ -43,9 +44,15 @@ const ParticipantsDraggable: FC<Props> = ({
   )
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 3
+        delay: 0,
+        tolerance: 0
+      }
+    }),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 0
       }
     })
   )
@@ -84,9 +91,7 @@ const ParticipantsDraggable: FC<Props> = ({
             <ParticipantDraggable key={participant} participant={participant} />
           ))}
         </SortableContext>
-        {activeParticipant && (
-          <DynamicParticipantPortal participant={activeParticipant} />
-        )}
+        <DynamicParticipantPortal participant={activeParticipant ?? ''} />
       </DndContext>
     </div>
   )

@@ -8,6 +8,8 @@ interface Props {
 }
 
 const DynamicParticipantPortal: FC<Props> = ({ participant }) => {
+  if (!participant) return null
+
   return createPortal(
     <DragOverlay>
       <ParticipantDraggable participant={participant} />
