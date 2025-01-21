@@ -1,12 +1,11 @@
 .container {
   position: relative;
   $white: #eee;
-  $width: 100px;
 
   .loader {
     position: relative;
     margin: 0 auto;
-    width: $width;
+    width: 100%;
     &:before {
       content: '';
       display: block;

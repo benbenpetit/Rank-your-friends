@@ -1,0 +1,44 @@
+.title {
+  color: #fff;
+}
+
+.validateAnim {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  h3 {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(1rem, 5vw, 3rem);
+    color: #fff;
+    overflow: hidden;
+    line-height: 1.5;
+
+    span {
+      line-height: 1.25;
+      display: block;
+      transform: translateY(150%);
+    }
+  }
+
+  .background {
+    position: absolute;
+    z-index: 0;
+    display: block;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #3a157f;
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+}

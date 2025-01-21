@@ -1,7 +1,6 @@
 import styles from '@/styles/layouts/PartyId.module.scss'
 import MainLayout from '@/components/MainLayout/MainLayout'
 import { IParty, IQuestion } from '@/core/types/party'
-import IResult from '@/core/types/result'
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { db } from '@/core/lib/firebase'
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
@@ -14,14 +13,9 @@ import gsap from 'gsap'
 interface ResultsPageProps {
   party: IParty
   questions: IQuestion[]
-  // results: IResult[]
 }
 
-const ResultsPage: NextPage<ResultsPageProps> = ({
-  party,
-  questions
-  // results
-}) => {
+const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
   const { user } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
   const validateAnimRef = useRef<HTMLDivElement>(null)
@@ -118,11 +112,6 @@ const ResultsPage: NextPage<ResultsPageProps> = ({
         <h1>{party.name}</h1>
         <span>{getReadableDateFromTimestamp(party.date)}</span>
       </header>
-      {/* {results?.map((result) => (
-        <div key={result.participant}>
-          {result.participant}: {result.average.toFixed(2)}
-        </div>
-      ))} */}
       <PartyQuestions
         participants={party?.participants ?? []}
         questions={questions}

@@ -28,9 +28,16 @@
     font-size: 1rem;
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
     font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
       background-color: color.scale(#842dff, $lightness: -5%);
+    }
+
+    &.loading {
+      pointer-events: none;
     }
   }
 }

@@ -12,8 +12,9 @@ const ListQuestions: FC<Props> = ({ questions, handleRemoveQuestion }) => {
       <ul>
         {questions.map((question) => (
           <li key={question}>
-            <span>{question}</span>
-            <button onClick={() => handleRemoveQuestion(question)}>x</button>
+            <button onClick={() => handleRemoveQuestion(question)}>
+              <span>{question}</span>
+            </button>
           </li>
         ))}
       </ul>

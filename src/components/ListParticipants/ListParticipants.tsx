@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
 import styles from './ListParticipants.module.scss'
 
 interface Props {
@@ -15,9 +15,8 @@ const ListParticipants: FC<Props> = ({
       <ul>
         {participants.map((participant) => (
           <li key={participant}>
-            <span>{participant}</span>
             <button onClick={() => handleRemoveParticipant(participant)}>
-              x
+              <span>{participant}</span>
             </button>
           </li>
         ))}

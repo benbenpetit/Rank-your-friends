@@ -3,6 +3,7 @@ import styles from './PartyQuestions.module.scss'
 import { IQuestion } from '@/core/types/party'
 import PartyQuestion from '@/components/PartyQuestions/PartyQuestion/PartyQuestion'
 import Spinner from '@/components/Spinner/Spinner'
+import clsx from 'clsx'
 
 interface Props {
   participants: string[]
@@ -89,7 +90,7 @@ const PartyQuestions: FC<Props> = ({
         ))}
         <div key='validate' className={styles.slide}>
           <button
-            className={styles.validateButton}
+            className={clsx(styles.validateButton, isLoading && styles.loading)}
             onClick={() =>
               hasAnsweredAllQuestions
                 ? setParticipantsRankings(sortedParticipants)

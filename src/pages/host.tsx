@@ -1,8 +1,9 @@
+import styles from '@/styles/layouts/Host.module.scss'
 import { db } from '@/core/lib/firebase'
 import { verifyIdToken } from '@/core/lib/firebaseAdmin'
-import { collection, addDoc, doc, setDoc, Timestamp } from 'firebase/firestore'
+import { collection, doc, setDoc, Timestamp } from 'firebase/firestore'
 import { GetServerSideProps } from 'next'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import nookies from 'nookies'
 import MainLayout from '@/components/MainLayout/MainLayout'
 import TextInput from '@/components/TextInput/TextInput'
@@ -10,6 +11,7 @@ import ListParticipants from '@/components/ListParticipants/ListParticipants'
 import CTA from '@/components/CTA/CTA'
 import ListQuestions from '@/components/ListQuestions/ListQuestions'
 import { useRouter } from 'next/navigation'
+import gsap from 'gsap'
 
 const HostPage = () => {
   const router = useRouter()
@@ -19,16 +21,70 @@ const HostPage = () => {
   const [participants, setParticipants] = useState<string[]>([])
   const [questionText, setQuestionText] = useState('')
   const [questions, setQuestions] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const validateAnimRef = useRef<HTMLDivElement>(null)
+  const validateAnimSpanRef = useRef<HTMLSpanElement>(null)
+  const validateAnimBgRef = useRef<HTMLSpanElement>(null)
+
+  const handleValidateAnim = () => {
+    if (validateAnimRef.current) {
+      gsap.set(validateAnimRef.current, {
+        display: 'flex'
+      })
+      gsap.set(validateAnimBgRef.current, {
+        scaleY: 0,
+        transformOrigin: 'top'
+      })
+      gsap.to(validateAnimSpanRef.current, {
+        duration: 0.8,
+        transform: 'translateY(0)',
+        ease: 'power4.inOut',
+        delay: 0.8
+      })
+      gsap.to(validateAnimBgRef.current, {
+        duration: 1.15,
+        scaleY: 1,
+        ease: 'power4.inOut',
+        onComplete: () => {
+          gsap.to(validateAnimBgRef.current, {
+            duration: 1.4,
+            transformOrigin: 'bottom',
+            scaleY: 0,
+            ease: 'power4.inOut',
+            delay: 1.5,
+            onStart: () => {
+              gsap.to(validateAnimSpanRef.current, {
+                duration: 0.8,
+                transform: 'translateY(150%)',
+                ease: 'power4.inOut',
+                delay: 0.2
+              })
+              setIsLoading(false)
+              setTimeout(() => {
+                router.push('/')
+              }, 500)
+            },
+            onComplete: () => {
+              gsap.set(validateAnimRef.current, {
+                display: 'none'
+              })
+            }
+          })
+        }
+      })
+    }
+  }
 
   const createParty = async () => {
     try {
+      setIsLoading(true)
       const [day, month, year] = date.split('/').map(Number)
       const cleanDate = new Date(year, month - 1, day)
 
       const partyRef = doc(collection(db, 'parties'))
       await setDoc(partyRef, {
         name: name,
-        participants: participants,
+        participants: participants.sort(),
         createdAt: Timestamp.now(),
         date: Timestamp.fromDate(cleanDate)
       })
@@ -39,19 +95,19 @@ const HostPage = () => {
           text: question
         })
       }
-
-      router.push('/')
     } catch (error) {
       console.error('Erreur lors de la création de la party :', error)
+    } finally {
+      handleValidateAnim()
     }
   }
 
   return (
     <MainLayout>
-      <h1>Créer une Soirée</h1>
+      <h1 className={styles.title}>Créer une soirée</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         <TextInput
-          placeholder='Nom'
+          placeholder='Titre'
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -104,7 +160,13 @@ const HostPage = () => {
             }}
           />
         )}
-        <CTA text='Créer' onClick={createParty} />
+        <CTA text='Créer' onClick={createParty} isLoading={isLoading} />
+        <div className={styles.validateAnim} ref={validateAnimRef}>
+          <h3>
+            <span ref={validateAnimSpanRef}>Soirée créée 🤑✅</span>
+          </h3>
+          <span className={styles.background} ref={validateAnimBgRef} />
+        </div>
       </div>
     </MainLayout>
   )
