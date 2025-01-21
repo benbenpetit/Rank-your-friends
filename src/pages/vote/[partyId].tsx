@@ -14,13 +14,13 @@ import gsap from 'gsap'
 interface ResultsPageProps {
   party: IParty
   questions: IQuestion[]
-  results: IResult[]
+  // results: IResult[]
 }
 
 const ResultsPage: NextPage<ResultsPageProps> = ({
   party,
-  questions,
-  results
+  questions
+  // results
 }) => {
   const { user } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
@@ -171,10 +171,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     ...doc.data()
   }))
 
-  const resResults = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/results?partyId=${partyId}`
-  )
-  const dataResults = await resResults.json()
+  // const resResults = await fetch(
+  //   `${process.env.NEXT_PUBLIC_API_URL}/api/results?partyId=${partyId}`
+  // )
+  // const dataResults = await resResults.json()
 
   return {
     props: {
@@ -184,8 +184,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         participants: partyData?.participants || [],
         date: partyData?.date?.toDate().toISOString() || ''
       },
-      questions: questions ?? [],
-      results: dataResults?.results || []
+      questions: questions ?? []
+      // results: dataResults?.results || []
     },
     revalidate: 60
   }
