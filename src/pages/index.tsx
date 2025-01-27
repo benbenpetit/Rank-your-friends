@@ -6,6 +6,7 @@ import Userbar from '@/components/UserBar/Userbar'
 import PartiesList from '@/components/PartiesList/PartiesList'
 import MainLayout from '@/components/MainLayout/MainLayout'
 import Login from '@/components/Login/Login'
+import styles from '@/styles/layouts/Home.module.scss'
 
 interface HomePageProps {
   initialIsAuth: boolean
@@ -27,7 +28,10 @@ const Home: NextPage<HomePageProps> = ({ initialIsAuth, initialIsAdmin }) => {
           />
         </>
       ) : (
-        <Login />
+        <>
+          <h1 className={styles.title}>Rank your friends !</h1>
+          <Login />
+        </>
       )}
     </MainLayout>
   )
