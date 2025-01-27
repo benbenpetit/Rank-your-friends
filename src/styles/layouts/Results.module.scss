@@ -1,0 +1,59 @@
+@use 'sass:color';
+
+.header {
+  color: #111;
+  background-color: #fff;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.title {
+  color: #fff;
+}
+
+.container {
+  position: relative;
+  overflow: hidden;
+
+  .swiper {
+    display: flex;
+    transition: transform 0.45s cubic-bezier(0.4, 0, 0, 1);
+
+    .slide {
+      width: 100%;
+      flex-grow: 1;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+}
+
+.navButtons {
+  display: flex;
+  column-gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  button {
+    width: 100%;
+    background-color: #842dff;
+    border-radius: 8px;
+    padding: 1rem 0.75rem;
+    color: #fff;
+    font-size: 1rem;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
+
+    &:hover {
+      background-color: color.scale(#842dff, $lightness: -2%);
+    }
+  }
+}

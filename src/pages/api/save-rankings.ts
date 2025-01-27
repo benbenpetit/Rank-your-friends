@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { db } from '@/core/lib/firebase'
-import { doc, writeBatch, arrayUnion, getDoc } from 'firebase/firestore'
+import { doc, writeBatch, arrayUnion } from 'firebase/firestore'
 import { verifyIdToken } from '@/core/lib/firebaseAdmin'
 
 export default async function handler(
@@ -33,6 +33,7 @@ export default async function handler(
 
     const batch = writeBatch(db)
 
+    // Add votes to questions
     for (const ranking of rankedParticipantsByQuestions) {
       const { questionId, participants } = ranking
 
@@ -42,47 +43,23 @@ export default async function handler(
 
       const questionRef = doc(db, 'parties', partyId, 'questions', questionId)
 
-      const questionSnapshot = await getDoc(questionRef)
-      const questionData = questionSnapshot.data()
-      const rankings = questionData?.rankings || []
-
-      const existingVote = rankings.find(
-        (ranking: any) => ranking.userId === userId
-      )
-
-      if (existingVote) {
-        batch.update(questionRef, {
-          rankings: arrayUnion({
-            userId,
-            participants
-          })
+      batch.update(questionRef, {
+        rankings: arrayUnion({
+          userId,
+          participants
         })
-      } else {
-        batch.update(questionRef, {
-          rankings: arrayUnion({
-            userId,
-            participants
-          })
-        })
-      }
-    }
-
-    const userVotesRef = doc(db, 'userVotes', userId)
-    const userVotesSnapshot = await getDoc(userVotesRef)
-
-    if (userVotesSnapshot.exists()) {
-      batch.update(userVotesRef, {
-        votes: arrayUnion(partyId)
-      })
-    } else {
-      batch.set(userVotesRef, {
-        votes: [partyId]
       })
     }
+
+    // Add userId to the voters array of the party
+    const partyRef = doc(db, 'parties', partyId)
+    batch.update(partyRef, {
+      voters: arrayUnion(userId)
+    })
 
     await batch.commit()
 
-    res.status(200).json({ message: 'Rankings saved successfully!' })
+    res.status(200).json({ message: 'Rankings and votes saved successfully!' })
   } catch (error) {
     console.error('Error saving rankings:', error)
     res.status(500).json({ error: 'Erreur lors de la sauvegarde des rankings' })

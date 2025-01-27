@@ -15,7 +15,6 @@ interface UserContextType {
   user: FirebaseUser | null
   setUser: React.Dispatch<React.SetStateAction<FirebaseUser | null>>
   parties: IParty[]
-  userVotes: string[]
   isAdmin: boolean
   loading: boolean
 }
@@ -25,7 +24,6 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null)
   const [parties, setParties] = useState<any[]>([])
-  const [userVotes, setUserVotes] = useState<string[]>([])
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
 
@@ -42,34 +40,22 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
           setIsAdmin(false)
         }
 
-        const partiesSnapshot = await getDocs(collection(db, 'parties'))
-        const partiesData = partiesSnapshot.docs.map((doc) => {
-          const data = doc.data()
-          return {
-            id: doc.id,
-            ...data,
-            date: data?.date?.toDate().toISOString() || ''
-          }
-        })
-        setParties(partiesData)
-
-        const userVotesRef = doc(db, 'userVotes', user.uid)
-        const unsubscribeUserVotes = onSnapshot(userVotesRef, (docSnapshot) => {
-          if (docSnapshot.exists()) {
-            const data = docSnapshot.data()
-            console.log(data)
-            setUserVotes(data.votes || [])
-          } else {
-            setUserVotes([])
-          }
+        const partiesRef = collection(db, 'parties')
+        const unsubscribeParties = onSnapshot(partiesRef, (snapshot) => {
+          const updatedParties = snapshot.docs.map((doc) => {
+            const data = doc.data()
+            return {
+              id: doc.id,
+              ...data,
+              date: data?.date?.toDate().toISOString() || ''
+            }
+          })
+          setParties(updatedParties)
         })
 
-        return () => {
-          unsubscribeUserVotes()
-        }
+        return () => unsubscribeParties()
       } else {
         setUser(null)
-        setUserVotes([])
       }
       setLoading(false)
     })
@@ -78,9 +64,7 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [])
 
   return (
-    <UserContext.Provider
-      value={{ user, setUser, parties, userVotes, isAdmin, loading }}
-    >
+    <UserContext.Provider value={{ user, setUser, parties, isAdmin, loading }}>
       {children}
     </UserContext.Provider>
   )

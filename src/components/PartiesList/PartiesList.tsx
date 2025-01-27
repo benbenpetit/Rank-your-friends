@@ -12,7 +12,7 @@ interface Props {
 }
 
 const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
-  const { userVotes } = useUserContext()
+  const { user } = useUserContext()
 
   return (
     <div className={styles.container} style={{ ...style }}>
@@ -33,7 +33,7 @@ const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
                 <Link href={`/party/${party.id}`}>
                   <PartyCard
                     party={party}
-                    isVoted={userVotes?.includes(party.id)}
+                    isVoted={party?.voters?.includes(user?.uid ?? '')}
                   />
                 </Link>
               </li>

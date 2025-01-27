@@ -13,7 +13,7 @@
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 
     &.isVoted {
       margin-bottom: calc($votedPadding * 2 + 1rem);
@@ -51,7 +51,8 @@
       .participant {
         border-radius: 9999px;
         padding: 0.375rem 0.75rem;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px dashed #7b1eff;
         font-size: clamp(0.875rem, 3.5vw, 1rem);
       }
     }
@@ -66,7 +67,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    background-color: #842dff;
+    background-color: #260e53;
     border-radius: 8px;
     margin-top: -1rem;
     padding: $votedPadding 1.25rem;
@@ -77,16 +78,4 @@
       font-size: 0.875rem;
     }
   }
-
-  // .voted {
-  //   display: block;
-  //   margin-bottom: 0.5rem;
-  //   align-self: flex-start;
-  //   padding: 0.625rem 0.825rem;
-  //   border-radius: 9999px;
-  //   color: #fff;
-  //   background-color: #842dff;
-  //   font-weight: 500;
-  //   font-size: 0.875rem;
-  // }
 }

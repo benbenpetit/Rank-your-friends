@@ -9,14 +9,15 @@ import PartyQuestions from '@/components/PartyQuestions/PartyQuestions'
 import { useUserContext } from '@/core/context/UserContext'
 import { useRef, useState } from 'react'
 import gsap from 'gsap'
+import Link from 'next/link'
 
-interface ResultsPageProps {
+interface PartyPageProps {
   party: IParty
   questions: IQuestion[]
 }
 
-const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
-  const { user, userVotes } = useUserContext()
+const PartyPage: NextPage<PartyPageProps> = ({ party, questions }) => {
+  const { user, parties, isAdmin } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
   const validateAnimRef = useRef<HTMLDivElement>(null)
   const validateAnimSpanRef = useRef<HTMLSpanElement>(null)
@@ -106,13 +107,21 @@ const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
     }
   }
 
+  const updatedParty = parties.find((p) => p.id === party.id)
+
   return (
     <MainLayout>
       <header className={styles.header}>
         <h1>{party.name}</h1>
         <span>{getReadableDateFromTimestamp(party.date)}</span>
-        {userVotes?.includes(party.id) && (
+        {(party?.voters?.includes(user?.uid ?? '') ||
+          updatedParty?.voters?.includes(user?.uid ?? '')) && (
           <span className={styles.voted}>✅ Votes enregistrés&nbsp;</span>
+        )}
+        {isAdmin && (
+          <Link className={styles.admin} href={`/party/${party.id}/results`}>
+            🔒 Voir les résultats
+          </Link>
         )}
       </header>
       <PartyQuestions
@@ -180,6 +189,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           id: partyId,
           name: partyData?.name,
           participants: partyData?.participants || [],
+          voters: partyData?.voters || [],
           date: partyData?.date?.toDate().toISOString() || ''
         },
         questions
@@ -192,4 +202,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 }
 
-export default ResultsPage
+export default PartyPage

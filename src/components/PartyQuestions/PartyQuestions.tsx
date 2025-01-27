@@ -1,4 +1,4 @@
-import { FC, Fragment, ReactNode, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import styles from './PartyQuestions.module.scss'
 import { IQuestion } from '@/core/types/party'
 import PartyQuestion from '@/components/PartyQuestions/PartyQuestion/PartyQuestion'

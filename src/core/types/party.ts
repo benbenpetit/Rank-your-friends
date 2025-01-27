@@ -4,6 +4,7 @@ export interface IParty {
   id: string
   name: string
   participants: string[]
+  voters: string[]
   createdAt: Timestamp
   date?: string
 }
