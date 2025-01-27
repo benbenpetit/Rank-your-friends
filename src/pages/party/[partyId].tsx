@@ -16,7 +16,7 @@ interface ResultsPageProps {
 }
 
 const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
-  const { user } = useUserContext()
+  const { user, userVotes } = useUserContext()
   const [isLoading, setIsLoading] = useState(false)
   const validateAnimRef = useRef<HTMLDivElement>(null)
   const validateAnimSpanRef = useRef<HTMLSpanElement>(null)
@@ -111,6 +111,9 @@ const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
       <header className={styles.header}>
         <h1>{party.name}</h1>
         <span>{getReadableDateFromTimestamp(party.date)}</span>
+        {userVotes?.includes(party.id) && (
+          <span className={styles.voted}>✅ Votes enregistrés&nbsp;</span>
+        )}
       </header>
       <PartyQuestions
         participants={party?.participants ?? []}

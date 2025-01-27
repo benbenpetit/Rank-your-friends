@@ -8,27 +8,27 @@ import {
 } from 'react'
 import { auth, db } from '@/core/lib/firebase'
 import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, doc, getDocs, onSnapshot } from 'firebase/firestore'
 import { IParty } from '@/core/types/party'
 
 interface UserContextType {
   user: FirebaseUser | null
   setUser: React.Dispatch<React.SetStateAction<FirebaseUser | null>>
   parties: IParty[]
+  userVotes: string[]
   isAdmin: boolean
   loading: boolean
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-// UserProvider component that wraps the app to provide context
 export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null)
   const [parties, setParties] = useState<any[]>([])
+  const [userVotes, setUserVotes] = useState<string[]>([])
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
 
-  // Handle user authentication state change
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -42,7 +42,6 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
           setIsAdmin(false)
         }
 
-        // Fetch parties from Firestore when the user is logged in
         const partiesSnapshot = await getDocs(collection(db, 'parties'))
         const partiesData = partiesSnapshot.docs.map((doc) => {
           const data = doc.data()
@@ -53,8 +52,24 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
           }
         })
         setParties(partiesData)
+
+        const userVotesRef = doc(db, 'userVotes', user.uid)
+        const unsubscribeUserVotes = onSnapshot(userVotesRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data()
+            console.log(data)
+            setUserVotes(data.votes || [])
+          } else {
+            setUserVotes([])
+          }
+        })
+
+        return () => {
+          unsubscribeUserVotes()
+        }
       } else {
         setUser(null)
+        setUserVotes([])
       }
       setLoading(false)
     })
@@ -63,7 +78,9 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, setUser, parties, isAdmin, loading }}>
+    <UserContext.Provider
+      value={{ user, setUser, parties, userVotes, isAdmin, loading }}
+    >
       {children}
     </UserContext.Provider>
   )

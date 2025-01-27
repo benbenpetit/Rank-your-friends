@@ -3,6 +3,7 @@ import styles from './PartiesList.module.scss'
 import PartyCard from '@/components/PartyCard/PartyCard'
 import { IParty } from '@/core/types/party'
 import Link from 'next/link'
+import { useUserContext } from '@/core/context/UserContext'
 
 interface Props {
   parties: IParty[]
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
+  const { userVotes } = useUserContext()
+
   return (
     <div className={styles.container} style={{ ...style }}>
       <div className={styles.title}>
@@ -28,7 +31,10 @@ const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
             .map((party) => (
               <li key={party.name}>
                 <Link href={`/party/${party.id}`}>
-                  <PartyCard party={party} />
+                  <PartyCard
+                    party={party}
+                    isVoted={userVotes?.includes(party.id)}
+                  />
                 </Link>
               </li>
             ))}

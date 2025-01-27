@@ -2,45 +2,91 @@
 
 .container {
   position: relative;
-  padding: 1.25rem;
-  border-radius: 8px;
-  background-color: #3a157f;
-  transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
+  $votedPadding: 0.875rem;
 
-  &:hover {
-    background-color: color.scale(#3a157f, $lightness: -5%);
-  }
-
-  header {
+  .card {
+    position: relative;
+    z-index: 1;
+    padding: 1.25rem;
+    border-radius: 8px;
+    background-color: #3a157f;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0, 1);
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    column-gap: 0.5rem;
+    flex-direction: column;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 
-    .title {
-      font-size: clamp(1.125rem, 3.5vw, 1.25rem);
-      line-height: clamp(1.25rem, 3.5vw, 1.5rem);
+    &.isVoted {
+      margin-bottom: calc($votedPadding * 2 + 1rem);
     }
 
-    .date {
-      font-size: clamp(0.75rem, 3.5vw, 0.875rem);
-      line-height: clamp(1.25rem, 3.5vw, 1.5rem);
-      flex-shrink: 0;
+    &:hover {
+      background-color: color.scale(#3a157f, $lightness: -5%);
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      column-gap: 0.5rem;
+
+      .title {
+        font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+        line-height: clamp(1.25rem, 3.5vw, 1.5rem);
+      }
+
+      .date {
+        font-size: clamp(0.75rem, 3.5vw, 0.875rem);
+        line-height: clamp(1.25rem, 3.5vw, 1.5rem);
+        flex-shrink: 0;
+      }
+    }
+
+    .participants {
+      display: flex;
+      gap: 0.325rem;
+      flex-wrap: wrap;
+      max-width: 90%;
+
+      .participant {
+        border-radius: 9999px;
+        padding: 0.375rem 0.75rem;
+        background-color: rgba(0, 0, 0, 0.2);
+        font-size: clamp(0.875rem, 3.5vw, 1rem);
+      }
     }
   }
 
-  .participants {
+  .voted {
+    position: absolute;
+    z-index: 0;
+    top: 100%;
+    left: 0;
+    right: 0;
     display: flex;
-    gap: 0.325rem;
-    flex-wrap: wrap;
-    max-width: 90%;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: #842dff;
+    border-radius: 8px;
+    margin-top: -1rem;
+    padding: $votedPadding 1.25rem;
+    padding-top: calc($votedPadding + 1rem);
 
-    .participant {
-      border-radius: 9999px;
-      padding: 0.375rem 0.75rem;
-      background-color: rgba(0, 0, 0, 0.2);
-      font-size: clamp(0.875rem, 3.5vw, 1rem);
+    span {
+      line-height: 1rem;
+      font-size: 0.875rem;
     }
   }
+
+  // .voted {
+  //   display: block;
+  //   margin-bottom: 0.5rem;
+  //   align-self: flex-start;
+  //   padding: 0.625rem 0.825rem;
+  //   border-radius: 9999px;
+  //   color: #fff;
+  //   background-color: #842dff;
+  //   font-weight: 500;
+  //   font-size: 0.875rem;
+  // }
 }

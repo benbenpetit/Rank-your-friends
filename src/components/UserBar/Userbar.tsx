@@ -3,6 +3,7 @@ import styles from './Userbar.module.scss'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { getAuth, signOut } from 'firebase/auth'
+import { LuLogOut } from 'react-icons/lu'
 import nookies from 'nookies'
 
 interface Props {
@@ -27,6 +28,7 @@ const Userbar: FC<Props> = ({ username, imgSrc }) => {
   return (
     <div className={styles.container}>
       <Image
+        className={styles.avatar}
         src={imgSrc ?? '/img/default-avatar.png'}
         alt='Image de profil'
         width={40}
@@ -35,7 +37,9 @@ const Userbar: FC<Props> = ({ username, imgSrc }) => {
         priority
       />
       <span>{username ?? 'username.name@email.com'}</span>
-      <button onClick={handleDisconnect}>Déconnecter</button>
+      <button onClick={handleDisconnect}>
+        <LuLogOut size={14} />
+      </button>
     </div>
   )
 }

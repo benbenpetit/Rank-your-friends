@@ -1,26 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { db } from '@/core/lib/firebase'
-import {
-  doc,
-  writeBatch,
-  arrayRemove,
-  arrayUnion,
-  getDoc
-} from 'firebase/firestore'
+import { doc, writeBatch, arrayUnion, getDoc } from 'firebase/firestore'
 import { verifyIdToken } from '@/core/lib/firebaseAdmin'
-
-const hasUserVotedForQuestion = async (
-  partyId: string,
-  questionId: string,
-  userId: string
-) => {
-  const questionRef = doc(db, 'parties', partyId, 'questions', questionId)
-  const questionSnapshot = await getDoc(questionRef)
-  const questionData = questionSnapshot.data()
-  const rankings = questionData?.rankings || []
-
-  return rankings.find((ranking: any) => ranking.userId === userId)
-}
 
 export default async function handler(
   req: NextApiRequest,
@@ -61,27 +42,46 @@ export default async function handler(
 
       const questionRef = doc(db, 'parties', partyId, 'questions', questionId)
 
-      const existingVote = await hasUserVotedForQuestion(
-        partyId,
-        questionId,
-        userId
+      const questionSnapshot = await getDoc(questionRef)
+      const questionData = questionSnapshot.data()
+      const rankings = questionData?.rankings || []
+
+      const existingVote = rankings.find(
+        (ranking: any) => ranking.userId === userId
       )
 
       if (existingVote) {
         batch.update(questionRef, {
-          rankings: arrayRemove(existingVote)
+          rankings: arrayUnion({
+            userId,
+            participants
+          })
+        })
+      } else {
+        batch.update(questionRef, {
+          rankings: arrayUnion({
+            userId,
+            participants
+          })
         })
       }
+    }
 
-      batch.update(questionRef, {
-        rankings: arrayUnion({
-          userId,
-          participants
-        })
+    const userVotesRef = doc(db, 'userVotes', userId)
+    const userVotesSnapshot = await getDoc(userVotesRef)
+
+    if (userVotesSnapshot.exists()) {
+      batch.update(userVotesRef, {
+        votes: arrayUnion(partyId)
+      })
+    } else {
+      batch.set(userVotesRef, {
+        votes: [partyId]
       })
     }
 
     await batch.commit()
+
     res.status(200).json({ message: 'Rankings saved successfully!' })
   } catch (error) {
     console.error('Error saving rankings:', error)
