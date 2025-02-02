@@ -117,12 +117,12 @@ const PartyPage: NextPage<PartyPageProps> = ({ party, questions }) => {
         <span>{getReadableDateFromTimestamp(party.date)}</span>
         {(party?.voters?.includes(user?.uid ?? '') ||
           updatedParty?.voters?.includes(user?.uid ?? '')) && (
-          <span className={styles.voted}>✅ Votes enregistrés&nbsp;</span>
-        )}
-        {isAdmin && (
-          <Link className={styles.admin} href={`/party/${party.id}/results`}>
-            🔒 Voir les résultats
-          </Link>
+          <>
+            {/* <span className={styles.voted}>✅ Votes enregistrés&nbsp;</span> */}
+            <Link className={styles.admin} href={`/party/${party.id}/results`}>
+              👑 Voir les résultats
+            </Link>
+          </>
         )}
       </header>
       <PartyQuestions

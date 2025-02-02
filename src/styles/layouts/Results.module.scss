@@ -40,9 +40,13 @@
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
-      overflow-x: hidden;
+      overflow-x: scroll;
       margin-bottom: 0.5rem;
-      scroll-snap-type: none;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     .participants {
