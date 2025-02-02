@@ -11,7 +11,7 @@ export default async function handler(
     return res.status(405).json({ error: 'Méthode non autorisée' })
   }
 
-  const { partyId, rankedParticipantsByQuestions } = req.body
+  const { partyId, rankedParticipantsByQuestions, email } = req.body
 
   if (!partyId || !rankedParticipantsByQuestions) {
     return res
@@ -45,6 +45,7 @@ export default async function handler(
 
       batch.update(questionRef, {
         rankings: arrayUnion({
+          email,
           userId,
           participants
         })

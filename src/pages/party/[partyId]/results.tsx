@@ -10,11 +10,18 @@ import { ParsedUrlQuery } from 'querystring'
 import { getReadableDateFromTimestamp } from '@/core/utils/date'
 import { getRankingOfQuestion } from '@/core/utils/results'
 import RankResult from '@/components/RankResult/RankResult'
-import { useState } from 'react'
+import {
+  MouseEvent as ReactMouseEvent,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
+import clsx from 'clsx'
 
 interface IQuestionWithRanks extends IQuestion {
   rankings: {
     participants: string[]
+    email: string
   }[]
 }
 
@@ -29,6 +36,7 @@ interface Params extends ParsedUrlQuery {
 
 const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [selectedEmail, setSelectedEmail] = useState<string>('')
 
   const handleSlide = (direction: 'left' | 'right') => () => {
     if (direction === 'left') {
@@ -59,11 +67,44 @@ const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
           >
             {questions.map((question) => (
               <li className={styles.slide} key={question.id}>
+                <div className={styles.participantsContainer}>
+                  <ul className={styles.participants}>
+                    <li
+                      className={clsx(
+                        styles.participant,
+                        !selectedEmail && styles.isActive
+                      )}
+                      onClick={() => setSelectedEmail('')}
+                    >
+                      Tout
+                    </li>
+                    {question.rankings.map((ranking, index) => (
+                      <li
+                        key={index}
+                        className={clsx(
+                          styles.participant,
+                          ranking.email === selectedEmail && styles.isActive
+                        )}
+                        onClick={() => setSelectedEmail(ranking.email)}
+                      >
+                        {ranking.email.split('@')[0]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <RankResult
                   title={question.text}
-                  ranking={getRankingOfQuestion(
-                    question.rankings.map((ranking) => ranking.participants)
-                  )}
+                  ranking={
+                    !selectedEmail
+                      ? getRankingOfQuestion(
+                          question.rankings.map(
+                            (ranking) => ranking.participants
+                          )
+                        )
+                      : question.rankings.find(
+                          (ranking) => ranking.email === selectedEmail
+                        )?.participants || []
+                  }
                 />
               </li>
             ))}

@@ -89,7 +89,8 @@ const PartyPage: NextPage<PartyPageProps> = ({ party, questions }) => {
         },
         body: JSON.stringify({
           partyId: party.id,
-          rankedParticipantsByQuestions
+          rankedParticipantsByQuestions,
+          email: user.email
         })
       })
 
