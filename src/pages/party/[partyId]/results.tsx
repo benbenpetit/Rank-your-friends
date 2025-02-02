@@ -117,20 +117,22 @@ const ResultsPage: NextPage<ResultsPageProps> = ({ party, questions }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const token = nookies.get(context).token || ''
-  let isAdmin = false
+  let isAuth = false
 
   if (token) {
     try {
       const decodedToken = await verifyIdToken(token)
-      isAdmin = decodedToken.role === 'admin'
+      if (decodedToken) {
+        isAuth = true
+      }
     } catch (error) {
       console.error('Authentication error:', error)
       return { redirect: { destination: '/', permanent: false } }
     }
   }
 
-  if (!isAdmin) {
-    return { redirect: { destination: '/', permanent: false } }
+  if (!isAuth) {
+    return { redirect: { destination: '/', permanent: false } } // Redirect if not admin
   }
 
   const { partyId } = context.params as Params

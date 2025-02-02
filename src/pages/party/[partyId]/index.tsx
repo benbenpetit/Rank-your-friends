@@ -1,7 +1,12 @@
 import styles from '@/styles/layouts/PartyId.module.scss'
 import MainLayout from '@/components/MainLayout/MainLayout'
 import { IParty, IQuestion } from '@/core/types/party'
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
+import {
+  GetServerSideProps,
+  GetStaticPaths,
+  GetStaticProps,
+  NextPage
+} from 'next'
 import { db } from '@/core/lib/firebase'
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 import { getReadableDateFromTimestamp } from '@/core/utils/date'
@@ -10,6 +15,8 @@ import { useUserContext } from '@/core/context/UserContext'
 import { useRef, useState } from 'react'
 import gsap from 'gsap'
 import Link from 'next/link'
+import nookies from 'nookies'
+import { verifyIdToken } from '@/core/lib/firebaseAdmin'
 
 interface PartyPageProps {
   party: IParty
@@ -143,27 +150,19 @@ const PartyPage: NextPage<PartyPageProps> = ({ party, questions }) => {
   )
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  try {
-    const partiesRef = collection(db, 'parties')
-    const snapshot = await getDocs(partiesRef)
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cookies = nookies.get(context)
+  const token = cookies.token || ''
 
-    const paths = snapshot.docs.map((doc) => ({
-      params: { partyId: doc.id }
-    }))
-
-    return { paths, fallback: 'blocking' }
-  } catch (error) {
-    console.error('Error fetching Firestore data in getStaticPaths:', error)
-    return { paths: [], fallback: false }
+  if (!token) {
+    return { redirect: { destination: '/', permanent: false } }
   }
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { partyId } = params!
 
   try {
-    const partyRef = doc(db, 'parties', partyId as string)
+    await verifyIdToken(token)
+
+    const { partyId } = context.params! as { partyId: string }
+    const partyRef = doc(db, 'parties', partyId)
     const partySnap = await getDoc(partyRef)
 
     if (!partySnap.exists()) {
@@ -172,12 +171,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     const partyData = partySnap.data()
 
-    const questionsRef = collection(
-      db,
-      'parties',
-      partyId as string,
-      'questions'
-    )
+    const questionsRef = collection(db, 'parties', partyId, 'questions')
     const questionsSnapshot = await getDocs(questionsRef)
     const questions = questionsSnapshot.docs.map((doc) => ({
       id: doc.id,
@@ -194,12 +188,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
           date: partyData?.date?.toDate().toISOString() || ''
         },
         questions
-      },
-      revalidate: 60
+      }
     }
   } catch (error) {
-    console.error('Error fetching Firestore data in getStaticProps:', error)
-    return { notFound: true }
+    console.error('Error fetching Firestore data:', error)
+    return { redirect: { destination: '/', permanent: false } }
   }
 }
 
