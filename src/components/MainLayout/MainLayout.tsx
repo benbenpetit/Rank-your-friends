@@ -11,8 +11,7 @@ const MainLayout: FC<Props> = ({ children }) => {
   return (
     <>
       <Head>
-        <title>💥 Rank your friends for next party 🎊</title>
-        <meta name='description' content='Rank your friends for next party' />
+        <title>💥 Rank your friends</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
