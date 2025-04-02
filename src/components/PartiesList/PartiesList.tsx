@@ -26,7 +26,7 @@ const PartiesList: FC<Props> = ({ parties, isAdmin, style }) => {
             .sort((a, b) => {
               const dateA = new Date(a.date ?? 0).getTime()
               const dateB = new Date(b.date ?? 0).getTime()
-              return dateA - dateB
+              return dateB - dateA
             })
             .map((party) => (
               <li key={party.name}>
